@@ -1,0 +1,20 @@
+# 运行时依赖
+# 安装：python -m pip install -r requirements.txt
+
+# 界面框架
+PySide6>=6.7
+
+# 栅格读写（裁剪要读像素、写带地理参考的 GeoTIFF）
+# 自带 GDAL 与 PROJ 数据，不需要另外装 OSGeo4W / QGIS
+rasterio>=1.5
+numpy>=2.0
+
+# CAD 输出（写 DXF；装了 ODA File Converter 时自动再转一份 DWG）
+ezdxf>=1.4
+
+# 常用候选（按需取消注释并固定版本）：
+# pyproj>=3.7          # 坐标转换（rasterio 已带 PROJ，需要更细的转换再用它）
+# shapely>=2.0         # 几何运算（按多边形裁剪时需要）
+# fiona>=1.10          # 矢量数据读写
+# geopandas>=1.0       # 矢量表操作
+# pillow>=10.0         # 图像处理（切片、拼接）

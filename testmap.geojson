@@ -1,0 +1,98 @@
+{
+  "type": "FeatureCollection",
+  "name": "GisMapsHelper · 全部图层（4）",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [112.8611755, 28.1440577],
+            [112.9717254, 28.1440577],
+            [112.9717254, 28.2366529],
+            [112.8611755, 28.2366529],
+            [112.8611755, 28.1440577]
+          ]
+        ]
+      },
+      "properties": {
+        "name": "TIF 范围 · testmap.tif",
+        "kind": "tif",
+        "visible": true,
+        "source": "testmap.tif",
+        "source_crs": "EPSG:3857",
+        "pixels": [41216, 39168],
+        "pixel_size_m": 0.299,
+        "native_zoom": 19.0,
+        "area_km2": 111.8032,
+        "datum": "WGS84",
+        "exported_at": "2026-10-22T18:06:16+08:00"
+      },
+      "bbox": [112.8611755, 28.1440577, 112.9717254, 28.2366529]
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [112.9119873, 28.2106341]
+      },
+      "properties": {
+        "name": "项目原点",
+        "kind": "origin",
+        "visible": true,
+        "datum": "WGS84",
+        "exported_at": "2026-10-22T18:06:16+08:00"
+      },
+      "bbox": [112.9119873, 28.2106341, 112.9119873, 28.2106341]
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [112.9068903, 28.2061425],
+            [112.9170843, 28.2061425],
+            [112.9170843, 28.2151256],
+            [112.9068903, 28.2151256],
+            [112.9068903, 28.2061425]
+          ]
+        ]
+      },
+      "properties": {
+        "name": "切片 1 km",
+        "kind": "slice",
+        "visible": true,
+        "area_km2": 1.0,
+        "datum": "WGS84",
+        "exported_at": "2026-10-22T18:06:16+08:00"
+      },
+      "bbox": [112.9068903, 28.2061425, 112.9170843, 28.2151256]
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [112.9064941, 28.2057934],
+            [112.9174805, 28.2057934],
+            [112.9174805, 28.2154747],
+            [112.9064941, 28.2154747],
+            [112.9064941, 28.2057934]
+          ]
+        ]
+      },
+      "properties": {
+        "name": "切片 4096 px",
+        "kind": "slice",
+        "visible": true,
+        "area_km2": 1.1615,
+        "datum": "WGS84",
+        "exported_at": "2026-10-22T18:06:16+08:00"
+      },
+      "bbox": [112.9064941, 28.2057934, 112.9174805, 28.2154747]
+    }
+  ]
+}

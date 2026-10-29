@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{TITLE}} · 瓦片预览</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { font: 13px/1.6 -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; }
+  #map { position: absolute; inset: 0; background: #0d1117; }
+  #hud {
+    position: absolute; z-index: 1000; top: 12px; left: 12px;
+    background: rgba(255,255,255,.95); border-radius: 10px; padding: 12px 14px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.28); max-width: 330px;
+  }
+  #hud h1 { font-size: 14px; margin: 0 0 8px; font-weight: 600; }
+  #hud dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 0; font-size: 12px; }
+  #hud dt { color: #667; white-space: nowrap; }
+  #hud dd { margin: 0; font-variant-numeric: tabular-nums; }
+  #hud .row { display: flex; gap: 14px; align-items: center; margin-top: 10px; font-size: 12px; }
+  #hud label { display: flex; gap: 5px; align-items: center; cursor: pointer; }
+  #hud .hint { margin-top: 8px; font-size: 11px; color: #8a94a6; }
+  #fallback {
+    position: absolute; inset: 0; display: none; place-items: center; padding: 24px;
+    color: #e6edf3; text-align: center; background: #0d1117; font-size: 13px; line-height: 1.8;
+  }
+  #fallback code { background: #161b22; padding: 2px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="fallback">
+  <div>
+    <p><strong>无法加载 Leaflet</strong>（离线或 CDN 被拦截），预览页不可用。</p>
+    <p>瓦片本身没有问题，可直接用 QGIS / OpenLayers / Leaflet 加载 <code>tiles/{z}/{x}/{y}</code>。</p>
+  </div>
+</div>
+<div id="hud">
+  <h1>{{TITLE}}</h1>
+  <dl>
+    <dt>层级</dt><dd id="v-zoom">—</dd>
+    <dt>范围</dt><dd id="v-bounds">—</dd>
+    <dt>瓦片</dt><dd id="v-tiles">—</dd>
+    <dt>方案</dt><dd id="v-scheme">—</dd>
+  </dl>
+  <div class="row">
+    <label><input type="checkbox" id="ref"> 叠加在线底图比对</label>
+    <label><input type="checkbox" id="edge" checked> 显示范围框</label>
+  </div>
+  <div class="hint">右键/拖动缩放；开启在线底图后，若影像明显错位说明地理范围或基准面需要修正。</div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const CONF = {{CONF}};
+(function () {
+  if (typeof L === 'undefined') {
+    document.getElementById('fallback').style.display = 'grid';
+    return;
+  }
+  const map = L.map('map', {
+    center: CONF.center,
+    zoom: CONF.maxzoom,
+    minZoom: 0,
+    maxZoom: CONF.maxzoom + 2,
+    zoomControl: true,
+    attributionControl: true
+  });
+
+  const local = L.tileLayer(CONF.tileUrl, {
+    tms: !!CONF.tms,
+    tileSize: CONF.tileSize,
+    minZoom: CONF.minzoom,
+    maxZoom: CONF.maxzoom,
+    maxNativeZoom: CONF.maxzoom,
+    minNativeZoom: CONF.minzoom,
+    noWrap: true,
+    keepBuffer: 4,
+    attribution: 'gismap-helper'
+  }).addTo(map);
+
+  L.control.scale({ imperial: false }).addTo(map);
+
+  const rect = L.rectangle(CONF.bounds, {
+    color: '#ff3b30', weight: 1.5, fill: false, dashArray: '6 4'
+  }).addTo(map);
+
+  let ref = null;
+  document.getElementById('ref').addEventListener('change', function (e) {
+    if (e.target.checked) {
+      ref = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19, opacity: 0.55, attribution: 'Esri World Imagery'
+      });
+      ref.addTo(map);
+      local.bringToFront();
+    } else if (ref) {
+      map.removeLayer(ref);
+      ref = null;
+    }
+  });
+
+  document.getElementById('edge').addEventListener('change', function (e) {
+    if (e.target.checked) { rect.addTo(map); } else { map.removeLayer(rect); }
+  });
+
+  map.fitBounds(CONF.bounds, { padding: [20, 20] });
+
+  const s = CONF.bounds[0][0], w = CONF.bounds[0][1];
+  const n = CONF.bounds[1][0], e = CONF.bounds[1][1];
+  document.getElementById('v-zoom').textContent = 'z' + CONF.minzoom + ' – z' + CONF.maxzoom;
+  document.getElementById('v-bounds').textContent =
+    w.toFixed(4) + ', ' + s.toFixed(4) + ' → ' + e.toFixed(4) + ', ' + n.toFixed(4);
+  document.getElementById('v-scheme').textContent = CONF.schemeNote || 'xyz';
+  document.getElementById('v-tiles').textContent = '见 manifest.json';
+
+  map.on('zoomend', function () {
+    const z = map.getZoom();
+    document.getElementById('v-zoom').textContent =
+      'z' + z + (z > CONF.maxzoom ? '（超出原生层级）' : '');
+  });
+})();
+</script>
+</body>
+</html>
